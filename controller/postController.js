@@ -10,10 +10,10 @@ const Status = {
 };
 
 
-exports.createPost = async(req,res) => {
+exports.createPost = async (req, res) => {
     try {
-        
-        console.log("body",req.body);
+
+        console.log("body", req.body);
         console.log("flle", req.file);
         if (!req.file) {
             return res.status(Status.BAD_REQUEST).json({
@@ -23,17 +23,25 @@ exports.createPost = async(req,res) => {
         }
         // Upload the file buffer to Cloudinary
         let image = await uploadCloudinary(req.file.buffer); // Assuming uploadCloudinary accepts file buffer
+
+        // Check if uploadCloudinary was successful
+        if (!image || !image.url) {
+            return res.status(Status.INTERNAL_SERVER_ERROR).json({
+                status: "Error",
+                message: "Failed to upload image to Cloudinary",
+            });
+        }
         req.body.Featureimage = image.url;
 
         const postData = await postModel.create(req.body)
         res.status(Status.OK).json({
             status: "Success",
             message: "Post has been added successfully",
-            image:image,
+            image,
             data: postData,
         });
 
     } catch (error) {
-        handleServerError(Status.NOT_FOUND,res,error);
+        handleServerError(Status.NOT_FOUND, res, error);
     }
 }
