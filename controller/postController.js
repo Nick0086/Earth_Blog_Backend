@@ -15,8 +15,14 @@ exports.createPost = async(req,res) => {
         
         console.log("body",req.body);
         console.log("flle", req.file);
-
-        let image =  await uploadeCloudinary(req.file.path)
+        if (!req.file) {
+            return res.status(Status.BAD_REQUEST).json({
+                status: "Error",
+                message: "No file uploaded",
+            });
+        }
+        // Upload the file buffer to Cloudinary
+        let image = await uploadCloudinary(req.file.buffer); // Assuming uploadCloudinary accepts file buffer
         req.body.Featureimage = image.url;
 
         const postData = await postModel.create(req.body)
@@ -26,7 +32,6 @@ exports.createPost = async(req,res) => {
             image:image,
             data: postData,
         });
-
 
     } catch (error) {
         handleServerError(Status.NOT_FOUND,res,error);
