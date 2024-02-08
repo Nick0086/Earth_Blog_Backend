@@ -1,4 +1,5 @@
 const postModel = require("../model/postModel");
+const { uploadeCloudinary } = require("../utils/cloudinart");
 const { handleServerError } = require("../utils/handleServerError");
 
 const Status = {
@@ -15,11 +16,17 @@ exports.createPost = async(req,res) => {
         console.log("body",req.body);
         console.log("flle", req.file);
 
-        const postData = await postModel.create(req.body)
+        let image;
+        if(req.file){
+             image =  await uploadeCloudinary(req.file.path)
+        }
+
+        // const postData = await postModel.create(req.body)
         res.status(Status.OK).json({
             status: "Success",
             message: "Post has been added successfully",
-            data: postData,
+            image:image
+            // data: postData,
         });
 
 

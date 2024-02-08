@@ -9,8 +9,6 @@ var debug = require('debug')('server:server');
 var http = require('http');
 const mongoose = require('mongoose');
 
-console.log(process.env.URL)
-
 mongoose.connect(process.env.URL)
   .then(() => console.log('Connected!'));
 
