@@ -16,17 +16,15 @@ exports.createPost = async(req,res) => {
         console.log("body",req.body);
         console.log("flle", req.file);
 
-        let image;
-        if(req.file){
-             image =  await uploadeCloudinary(req.file.path)
-        }
+        let image =  await uploadeCloudinary(req.file.path)
+        req.body.Featureimage = image.url;
 
-        // const postData = await postModel.create(req.body)
+        const postData = await postModel.create(req.body)
         res.status(Status.OK).json({
             status: "Success",
             message: "Post has been added successfully",
-            image:image
-            // data: postData,
+            image:image,
+            data: postData,
         });
 
 
