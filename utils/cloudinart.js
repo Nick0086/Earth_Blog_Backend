@@ -14,15 +14,21 @@ exports.uploadCloudinary = async (fileBuffer) => {
             return false;
         }
 
-        const response = await cloudinary.uploader.upload_stream({
-            resource_type: 'auto'
-        }, (error, result) => {
-            if (error) {
-                console.log("Error in uploading file to Cloudinary", error);
-                return false;
-            }
-            return result;
-        }).end(fileBuffer);
+        const response = await new Promise((resolve, reject) => {
+            const uploadStream = cloudinary.uploader.upload_stream({
+                resource_type: 'auto'
+            }, (error, result) => {
+                if (error) {
+                    console.log("Error in uploading file to Cloudinary", error);
+                    reject(error);
+                } else {
+                    resolve(result);
+                }
+            });
+
+            // Write the buffer to the upload stream
+            uploadStream.end(fileBuffer);
+        });
 
         return response;
     } catch (error) {
@@ -30,6 +36,7 @@ exports.uploadCloudinary = async (fileBuffer) => {
         return false;
     }
 }
+
 
 
 exports.deleteFromCloudinary = async (public_id) => {
