@@ -1,5 +1,5 @@
 const postModel = require("../model/postModel");
-const { uploadeCloudinary } = require("../utils/cloudinart");
+const { uploadCloudinary } = require("../utils/cloudinart");
 const { handleServerError } = require("../utils/handleServerError");
 
 const Status = {
@@ -22,7 +22,7 @@ exports.createPost = async(req,res) => {
             });
         }
         // Upload the file buffer to Cloudinary
-        let image = await uploadeCloudinary(req.file.buffer); // Assuming uploadCloudinary accepts file buffer
+        let image = await uploadCloudinary(req.file.buffer); // Assuming uploadCloudinary accepts file buffer
         req.body.Featureimage = image.url;
 
         const postData = await postModel.create(req.body)
